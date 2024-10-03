@@ -1,0 +1,81 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Courier New', monospace;
+    background-color: #f9f4e8; /* Soft pastel background */
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 30px;
+    background-color: #fff; /* White box */
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    text-align: center;
+    color: #4a4a4a; /* Soft text color */
+}
+
+.redirect_tree {
+    margin-top: 20px; /* Space above the buttons */
+    padding: 20px; /* Padding inside the separation div */
+    border: 2px solid #f08d49; /* Border for the button box */
+    border-radius: 10px; /* Rounded corners for the box */
+    background-color: #fff; /* Light background for the button box */
+    display: flex;
+    flex-direction: column; /* Stack buttons vertically */
+    align-items: center; /* Center buttons */
+}
+
+button {
+    margin: 10px 0; /* Space between buttons */
+    padding: 10px 20px; /* Button padding */
+    font-size: 16px; /* Font size for button text */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #f08d49; /* Button background color */
+    color: #fff; /* Button text color */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+button:hover {
+    background-color: #ff7e40; /* Darker orange on hover */
+}
+
+.inptContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    padding: 12px;
+    border: 2px solid #f08d49; /* Pastel orange */
+    border-radius: 10px;
+    font-size: 16px;
+    resize: none;
+    background-color: #fff3e0; /* Light background */
+}
+
+textarea:focus {
+    border-color: #ff7e40; /* Darker orange on focus */
+    outline: none;
+}
+
+.outptbx {
+    width: 100%;
+    min-height: 100px;
+    padding: 15px;
+    margin-top: 10px;
+    border: 2px solid #f08d49; /* Matching pastel border */
+    border-radius: 10px;
+    background-color: #fff; /* Light output box */
+    color: #4a4a4a;
+    overflow: auto;
+}
