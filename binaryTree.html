@@ -3,14 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=0.5">
-    <link rel="shortcut icon" href="#">
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="style.css"> 
+    <script src="https://d3js.org/d3.v7.min.js"></script> <!-- Include D3.js -->
     <title>Tree Visualiser</title>
+    
+    
 </head>
 <body>
     <div class = "container">
         <h1>Binary Tree Visualiser</h1>
+        <div class = "svgcontainer">
+        </div>
+        <div class = "inptContainer">
+            <textarea type="number" id = "inpt" placeholder="Enter all numbers in form of array seperated by space"></textarea>
+            <div class = "buttonContainer">
+                <button class="lockbtn" onclick = "getInpt()">Lock</button>
+            </div>
+        </div>
     </div>
+    <script  src ="./logic/binaryDraw.js"></script>
+    <script  src="./logic/binary.js"></script>
+    <script  src="./logic/binaryTree_index.js"></script>
+    
+    
 </body>
+
+
+<!--<script type = "module" src ="./logic/binary.js"></script> -->
 </html>
