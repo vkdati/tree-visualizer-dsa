@@ -7,7 +7,8 @@ function getInpt()
     var num = [];
     for(let i = 0;i<arr.length;i++)
     {
-        var cleanedStr = arr[i].replace(/[^0-9]/g, ''); //regex cleanup
+       // var cleanedStr = arr[i].replace(/[^0-9]/g, ''); //regex cleanup
+       var cleanedStr = arr[i].replace(/[^-\d]/g, ''); //accounts for -ve numbers
         if(cleanedStr=='') continue;
         var intval = parseInt(cleanedStr,10);
         if(isNaN(intval)) continue;
