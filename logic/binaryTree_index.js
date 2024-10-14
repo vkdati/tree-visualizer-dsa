@@ -5,6 +5,7 @@ function getInpt()
     var arr = value.split(" ");
     console.log(arr);
     var num = [];
+    var searchButton = document.getElementById(".searchbutn");
     for(let i = 0;i<arr.length;i++)
     {
        // var cleanedStr = arr[i].replace(/[^0-9]/g, ''); //regex cleanup
@@ -17,4 +18,16 @@ function getInpt()
     console.log(num);
     var newTree = new BinaryTree();
     newTree.takeInpt(num);
+}
+function searchNode()
+{
+    
+    var searchInpt = document.getElementById("searchkey").value;
+    var searchKey = parseInt(searchInpt);
+    if (searchInpt== "")
+    {
+        return;
+    }
+    search(searchKey);
+    
 }

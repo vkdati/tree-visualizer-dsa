@@ -80,3 +80,20 @@ textarea:focus {
     overflow: auto;
 }
 
+.outptcontainer
+{
+    text-align: center;
+    color: #4a4a4a;
+}
+
+#searchkey
+{
+    margin: 10px 0; /* Space between buttons */
+    padding: 10px 20px; /* Button padding */
+    font-size: 16px; /* Font size for button text */
+    border: 2px solid black; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #fff; /* Button background color */
+    color: black; /* Button text color */
+}
+

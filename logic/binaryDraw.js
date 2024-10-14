@@ -10,7 +10,7 @@
         width = (600) - margin.right - margin.left,
         height = (600) - margin.top - margin.bottom;
     const treeLayout = d3.tree().size([height,width]);
-   const root = d3.hierarchy(data);
+   window.root = d3.hierarchy(data);
    treeLayout(root);
    const links = root.links();
    const nodes = root.descendants();
@@ -58,5 +58,65 @@
         //.attr('x', d => d.children ? -8 : 8) // Position based on children
         .style('text-anchor',"middle")
         .text(d => d.data.value); // Use the value from the data
+
+
         
+}
+function search(key)
+{
+    //resetting colors
+    d3.selectAll(".node").select('circle').
+    style("fill", function (d, i) {
+
+        return d.children || d._children ? '#f0bc3e' : 'lightgray'; 
+    })
+    console.log(window.root.children)
+    recurseSearch(window.root,key);
+
+}
+function recurseSearch(node,key)
+{
+    if((!node.children)&&node.data.value != key)
+    {
+        console.log("key not found");
+        d3.selectAll(".node").filter(function(d) {return d.data.value==node.data.value;}).select('circle')
+        .transition()
+        .duration(500)
+        .ease(d3.easeLinear)
+        .style("fill","red");
+        var outptbox = document.getElementById("keystatus");
+        console.log(outptbox);
+        outptbox.innerHTML = "KEY NOT FOUND";
+        return;
+    }
+    if(node.data.value == key)
+    {
+        d3.selectAll(".node").filter(function(d) {return d.data.value==node.data.value;}).select('circle')
+        .transition()
+        .duration(500)
+        .ease(d3.easeLinear)
+        .style("fill","#c655fa");
+        var outptbox = document.getElementById("keystatus");
+        outptbox.innerHTML = "KEY FOUND";
+        return;
+    }
+    d3.selectAll(".node").filter(function(d) {return d.data.value==node.data.value;}).select('circle')
+    .transition()
+    .duration(500)
+    .ease(d3.easeLinear)
+    .style("fill","green")
+    .on("end",function()
+    {
+        if(key>node.data.value)
+            {
+                recurseSearch(node.children[1],key);
+            }
+            else
+            {
+                recurseSearch(node.children[0],key);
+            }
+    });
+    
+     //d3.selectAll(".node").filter(function(d) {return d.data.value==node.data.value;}).select('circle').style("fill","red");
+    
 }

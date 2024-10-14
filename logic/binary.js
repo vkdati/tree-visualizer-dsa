@@ -96,7 +96,10 @@ class Node {
         drawTree(this.toJSON());
     }
     
-    
+    getRoot()
+    {
+        return this.root;
+    }
     
 }
 // const y = new BinaryTree();

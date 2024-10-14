@@ -1,17 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Red-Black Tree</title>
-</head>
-<body>
-  <h1>Red-Black Tree</h1>
-  <input type="number" id="val" placeholder="Enter a value">
-  <button onclick="addNode()">Insert</button>
-  <pre id="out"></pre>
 
-  <script>
     class Node {
       constructor(data) {
         this.data = data;
@@ -136,6 +123,4 @@
         document.getElementById("val").value = "";
       }
     }
-  </script>
-</body>
-</html>
+
