@@ -77,6 +77,7 @@ textarea:focus {
     border-radius: 10px;
     background-color: #fff; /* Light output box */
     color: #4a4a4a;
+    overflow: hidden;
 
 }
 

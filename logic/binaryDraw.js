@@ -8,7 +8,7 @@
         left: 20
     },
         width = (600) - margin.right - margin.left,
-        height = (200*(size/10 +1)) - margin.top - margin.bottom;
+        height = Math.max((200*(size/10 +1)),600) - margin.top - margin.bottom;
     const treeLayout = d3.tree().size([height,width]);
    window.root = d3.hierarchy(data);
    treeLayout(root);
@@ -32,7 +32,7 @@
     .append('svg')
     .attr('id','outputsvg')
     .attr('onload','initializeZoom()')
-    .attr('width', height)
+    .attr('width', 1000)
     .attr('height', width)
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
