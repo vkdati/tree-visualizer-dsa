@@ -1,6 +1,6 @@
- function drawTree(data)
+ function drawTree(data,size)
 {
-   
+   console.log(size);
     const margin = {
         top: 50,
         right: 5,
@@ -8,7 +8,7 @@
         left: 20
     },
         width = (600) - margin.right - margin.left,
-        height = (600) - margin.top - margin.bottom;
+        height = (200*(size/10 +1)) - margin.top - margin.bottom;
     const treeLayout = d3.tree().size([height,width]);
    window.root = d3.hierarchy(data);
    treeLayout(root);
@@ -20,12 +20,20 @@
         filteredNodes.forEach(function(d)
     {
         d.y = d.depth*70; //scaling
+        
     });
+
+    filteredNodes.forEach(function(d)
+    {
+
+    })
     
    const svg = d3.select('.svgcontainer')
     .append('svg')
-    .attr('width', width)
-    .attr('height', height)
+    .attr('id','outputsvg')
+    .attr('onload','initializeZoom()')
+    .attr('width', height)
+    .attr('height', width)
     .append('g')
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
@@ -42,9 +50,11 @@
     
     const gNode = svg.selectAll('.node')
         .data(filteredNodes)
+        .attr('id','nodes')
         .enter()
         .append('g')
         .attr('class', 'node')
+    
         .attr('transform', d => `translate(${d.x}, ${d.y})`);
         
     gNode.append('circle')
@@ -104,7 +114,7 @@ function recurseSearch(node,key)
     .transition()
     .duration(500)
     .ease(d3.easeLinear)
-    .style("fill","green")
+    .style("fill","#5adb6d")
     .on("end",function()
     {
         if(key>node.data.value)

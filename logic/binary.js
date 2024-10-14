@@ -93,7 +93,7 @@ class Node {
         }
         this.removeTree();
         console.log(JSON.stringify(this.toJSON(),null,2));
-        drawTree(this.toJSON());
+        drawTree(this.toJSON(),arr.length);
     }
     
     getRoot()

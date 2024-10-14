@@ -6,7 +6,7 @@ body {
 }
 
 .container {
-    max-width: 600px;
+    max-width: 1000px;
     margin: auto;
     padding: 30px;
     background-color: #fff; /* White box */
@@ -77,7 +77,7 @@ textarea:focus {
     border-radius: 10px;
     background-color: #fff; /* Light output box */
     color: #4a4a4a;
-    overflow: auto;
+
 }
 
 .outptcontainer

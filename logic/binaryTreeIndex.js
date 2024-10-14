@@ -1,4 +1,8 @@
 
+
+
+
+
 function getInpt()
 {
     var value = document.getElementById("inpt").value;
@@ -18,7 +22,20 @@ function getInpt()
     console.log(num);
     var newTree = new BinaryTree();
     newTree.takeInpt(num);
+    initializeZoom();
 }
+
+function initializeZoom(){
+let zoom = d3.zoom()
+.on('zoom',handleZoom);
+function handleZoom(e)
+{
+    d3.select('svg g')
+    .attr('transform',e.transform);
+}
+d3.select('svg').call(zoom);
+}
+
 function searchNode()
 {
     
