@@ -86,7 +86,7 @@ class Node {
     }
     takeInpt(arr)
     {
-
+        
         for(let i = 0;i<arr.length;i++)
         {
             this.insert(arr[i]);

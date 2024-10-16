@@ -36,7 +36,6 @@ function handleZoom(e)
 }
 d3.select('svg').call(zoom);
 }
-
 function searchNode()
 {
     
@@ -48,4 +47,14 @@ function searchNode()
     }
     search(searchKey);
     
+}
+function deleteNode()
+{
+    var deleteInpt = document.getElementById("searchkey").value;
+    var keyToDelete = parseInt(deleteInpt);
+    if(deleteInpt == "")
+    {
+         return;
+    }
+    deleteKey(keyToDelete);
 }
