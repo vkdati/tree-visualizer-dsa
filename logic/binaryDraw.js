@@ -157,19 +157,54 @@ function recurseDelete(node,key)
     if(node.data.value == key && !node.children)
     {
         //delete node
+        //color the node red
+        d3.selectAll(".node").filter(function(d) {return d.data.value==node.data.value;}).select('circle')
+        .transition()
+        .duration(500)
+        .ease(d3.easeLinear)
+        .style("fill","red").
+        on("end",function(){
         node.data.value = "Empty";
+
+        d3.selectAll(".node").filter(function(d) {return d.data.value==node.data.value;}).select('text')
+        .transition()
+        .duration(1000) //changing text
+        .ease(d3.easeLinear)
+        .text("Empty")
+        .on("end",function(){;
         console.log("delete node of value",key);
         removeTree();
         drawTree(JSON.parse(JSON.stringify(window.root.data,null,2)),window.sizeOfArray);
         console.log(JSON.stringify(window.root.data,null,2));
+        })});
         return;
     }
     if(node.data.value == key && node.children)
     {
         var tempNode = getSuccessorOrPredecessor(node);
         console.log("value of tempnode is ",tempNode.data.value," finding succ/pre for ",node.data.value);
-        node.data.value = tempNode.data.value;
-        recurseDelete(tempNode,tempNode.data.value);
+        //ease this value in
+        //some color change
+        d3.selectAll(".node").filter(function(d) {return d.data.value==node.data.value;}).select('circle')
+        .transition()
+        .duration(500)
+        .ease(d3.easeLinear)
+        .style("fill","#c655fa")
+        .on("end",function(){
+         node.data.value = tempNode.data.value;
+        d3.selectAll(".node").filter(function(d) { return d.data.value == node.data.value; })
+        .select('text')
+        .transition()
+        .duration(500)
+        .tween("text", function(d) {
+            var that = this;
+            var i = d3.interpolate(this.textContent, d.data.value);
+            return function(t) {
+                that.textContent = Math.round(i(t)); 
+            };
+        }).on("end",function(){
+            recurseDelete(tempNode,tempNode.data.value);
+        })});
         return;
     }
     if(!node.children && node.data.value != key)
@@ -178,14 +213,23 @@ function recurseDelete(node,key)
         console.log("node not found");
         return;
     }
+    d3.selectAll(".node").filter(function(d) {return d.data.value==node.data.value;}).select('circle')
+    .transition()
+    .duration(500)
+    .ease(d3.easeLinear)
+    .style("fill","#5adb6d") //green for traversal
+    .on("end",function()
+    {
     if(key<node.data.value)
     {
+        //color for recursive travel
         recurseDelete(node.children[0],key);
     }
     if(key>node.data.value)
     {
         recurseDelete(node.children[1],key);
     }
+    });
 }
 function getSuccessorOrPredecessor(node)
 {
