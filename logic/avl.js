@@ -1,174 +1,189 @@
 class AVLNode {
-    constructor(value, parent = null) {
-        this.value = value;   // The value of the node
-        this.left = null;     // Pointer to the left child
-        this.right = null;    // Pointer to the right child
-        this.height = 1;      // Height of the node, used to balance the tree
-        this.parent = parent;
-    }
+  constructor(value, parent = "") {
+      this.value = value;      // The value of the node
+      this.left = null;        // Pointer to the left child
+      this.right = null;       // Pointer to the right child
+      this.height = 1;         // Height of the node (used to balance the tree)
+      this.parent = parent;    // Reference to the parent node
+  }
 }
 
 class AVLTree {
-    constructor() {
-        this.root = null; // Root of the AVL tree
-    }
+  constructor() {
+      this.root = null; // Root of the AVL tree
+  }
 
-    // Helper function to get the height of a node
-    height(node) {
-        if (node === null) return 0;
-        return node.height;
-    }
+  // Insert a new node in the AVL tree
+  insert(value) {
+      const newNode = new AVLNode(value);
+      this.root = this.insertNode(this.root, newNode);
+  }
 
-    // Get the balance factor of a node
-    getBalance(node) {
-        if (node === null) return 0;
-        return this.height(node.left) - this.height(node.right);
-    }
+  // Helper function to insert a node in the correct position and balance the tree
+  insertNode(node, newNode) {
+      if (node === null) {
+          return newNode; // If empty spot, insert the new node
+      }
 
-    // Perform a right rotation
-    rotateRight(y) {
-        const x = y.left;
-        const T2 = x.right;
+      if (newNode.value < node.value) {
+          node.left = this.insertNode(node.left, newNode); // Insert in the left subtree
+      } else if (newNode.value > node.value) {
+          node.right = this.insertNode(node.right, newNode); // Insert in the right subtree
+      } else {
+          return node; // Duplicates are not allowed in AVL
+      }
 
-        // Perform rotation
-        x.right = y;
-        y.left = T2;
+      // Update the height of the current node
+      node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
 
-        // Update heights
-        y.height = Math.max(this.height(y.left), this.height(y.right)) + 1;
-        x.height = Math.max(this.height(x.left), this.height(x.right)) + 1;
+      // Balance the node if it becomes unbalanced
+      const balance = this.getBalance(node);
 
-        // Return new root
-        return x;
-    }
+      // Case 1: Left Left (Single Right Rotation)
+      if (balance > 1 && newNode.value < node.left.value) {
+          return this.rotateRight(node);
+      }
 
-    // Perform a left rotation
-    rotateLeft(x) {
-        const y = x.right;
-        const T2 = y.left;
+      // Case 2: Right Right (Single Left Rotation)
+      if (balance < -1 && newNode.value > node.right.value) {
+          return this.rotateLeft(node);
+      }
 
-        // Perform rotation
-        y.left = x;
-        x.right = T2;
+      // Case 3: Left Right (Double Rotation: Left then Right)
+      if (balance > 1 && newNode.value > node.left.value) {
+          node.left = this.rotateLeft(node.left);
+          return this.rotateRight(node);
+      }
 
-        // Update heights
-        x.height = Math.max(this.height(x.left), this.height(x.right)) + 1;
-        y.height = Math.max(this.height(y.left), this.height(y.right)) + 1;
+      // Case 4: Right Left (Double Rotation: Right then Left)
+      if (balance < -1 && newNode.value < node.right.value) {
+          node.right = this.rotateRight(node.right);
+          return this.rotateLeft(node);
+      }
 
-        // Return new root
-        return y;
-    }
+      return node; // Return the unchanged node pointer
+  }
 
-    // Insert a node in the AVL tree
-    insert(value) {
-        this.root = this.insertNode(this.root, value);
-    }
+  // Helper function to get the height of the node
+  getHeight(node) {
+      if (node === null) {
+          return 0;
+      }
+      return node.height;
+  }
 
-    // Recursive function to insert a new node and balance the tree
-    insertNode(node, value) {
-        // Perform the normal BST insertion
-        if (node === null) {
-            return new AVLNode(value);
-        }
+  // Helper function to get the balance factor of the node
+  getBalance(node) {
+      if (node === null) {
+          return 0;
+      }
+      return this.getHeight(node.left) - this.getHeight(node.right);
+  }
 
-        if (value < node.value) {
-            node.left = this.insertNode(node.left, value);
-        } else if (value > node.value) {
-            node.right = this.insertNode(node.right, value);
-        } else {
-            return node; // Duplicate values are not allowed
-        }
+  // Rotate the subtree to the right
+  rotateRight(y) {
+      const x = y.left;
+      const T2 = x.right;
 
-        // Update height of this ancestor node
-        node.height = 1 + Math.max(this.height(node.left), this.height(node.right));
+      // Perform rotation
+      x.right = y;
+      y.left = T2;
 
-        // Get the balance factor of this ancestor node
-        const balance = this.getBalance(node);
+      // Update heights
+      y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
+      x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
 
-        // If the node becomes unbalanced, there are 4 cases
+      // Return new root
+      return x;
+  }
 
-        // Left Left Case
-        if (balance > 1 && value < node.left.value) {
-            return this.rotateRight(node);
-        }
+  // Rotate the subtree to the left
+  rotateLeft(x) {
+      const y = x.right;
+      const T2 = y.left;
 
-        // Right Right Case
-        if (balance < -1 && value > node.right.value) {
-            return this.rotateLeft(node);
-        }
+      // Perform rotation
+      y.left = x;
+      x.right = T2;
 
-        // Left Right Case
-        if (balance > 1 && value > node.left.value) {
-            node.left = this.rotateLeft(node.left);
-            return this.rotateRight(node);
-        }
+      // Update heights
+      x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
+      y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
 
-        // Right Left Case
-        if (balance < -1 && value < node.right.value) {
-            node.right = this.rotateRight(node.right);
-            return this.rotateLeft(node);
-        }
+      // Return new root
+      return y;
+  }
 
-        // Return the (unchanged) node pointer
-        return node;
-    }
+  // In-order traversal of the tree (for debugging)
+  inOrderTraversal(node = this.root) {
+      if (node) {
+          this.inOrderTraversal(node.left); // Visit left child
+          console.log(node.value);          // Visit node itself
+          this.inOrderTraversal(node.right); // Visit right child
+      }
+  }
 
-    // In-order traversal of the tree
-    inOrderTraversal(node = this.root) {
-        if (node) {
-            this.inOrderTraversal(node.left); // Visit left child
-            console.log(node.value); // Visit node itself
-            this.inOrderTraversal(node.right); // Visit right child
-        }
-    }
+  // Convert AVL tree to JSON format for visualization
+  toJSON(node = this.root) {
+      if (node === null) {
+          return null; // If the node is null, return null
+      }
 
-    // Convert the tree to JSON format for visualization
-    toJSON(node = this.root) {
-        if (node === null) {
-            return null; // If the node is null, return null
-        }
+      // Create a JSON object for the current node
+      const jsonNode = {
+          value: node.value,
+          children: [] // Initialize an empty array for children
+      };
 
-        // Create a JSON object for the current node
-        const jsonNode = {
-            value: node.value,
-            children: [] // Initialize an empty array for children
-        };
+      // Recursively convert left and right children to JSON
+      if (node.left || node.right) { // Only add children if they exist
+          if (node.left) {
+              jsonNode.children.push(this.toJSON(node.left)); // Add left child
+          } else {
+              jsonNode.children.push({ value: "Empty", children: [] }); // Add an "Empty" node
+          }
 
-        // Recursively convert left and right children to JSON
-        if (node.left || node.right) { // Only add children if they exist
-            if (node.left) {
-                jsonNode.children.push(this.toJSON(node.left)); // Add left child
-            } else {
-                jsonNode.children.push({ value: "Empty", children: [] }); // Add an "Empty" node
-            }
+          if (node.right) {
+              jsonNode.children.push(this.toJSON(node.right)); // Add right child
+          } else {
+              jsonNode.children.push({ value: "Empty", children: [] }); // Add an "Empty" node
+          }
+      }
 
-            if (node.right) {
-                jsonNode.children.push(this.toJSON(node.right)); // Add right child
-            } else {
-                jsonNode.children.push({ value: "Empty", children: [] }); // Add an "Empty" node
-            }
-        }
+      return jsonNode; // Return the JSON representation of the node
+  }
 
-        return jsonNode; // Return the JSON representation of the node
-    }
+  // Remove the tree visualization from the DOM (if needed)
+  removeTree() {
+      var graph = document.querySelector("svg");
+      if (graph) {
+          graph.parentElement.removeChild(graph);
+      }
+  }
 
-    // Function to remove the tree visualization (same as in your BinaryTree)
-    removeTree() {
-        var graph = document.querySelector("svg");
-        if (graph) { graph.parentElement.removeChild(graph); }
-    }
+  // Insert multiple values into the AVL tree
+  takeInpt(arr) {
+      for (let i = 0; i < arr.length; i++) {
+          this.insert(arr[i]);
+      }
+      this.removeTree();
+      console.log(JSON.stringify(this.toJSON(), null, 2));
+      drawTree(this.toJSON(), arr.length);
+  }
 
-    // Function to take input array and build the AVL tree
-    takeInpt(arr) {
-        for (let i = 0; i < arr.length; i++) {
-            this.insert(arr[i]);
-        }
-        this.removeTree();
-        console.log(JSON.stringify(this.toJSON(), null, 2));
-        drawTree(this.toJSON(), arr.length); // Call to draw AVL Tree
-    }
-
-    getRoot() {
-        return this.root;
-    }
+  // Get the root of the AVL tree
+  getRoot() {
+      return this.root;
+  }
 }
+
+// Test code
+// var avl = new AVLTree();
+// avl.insert(10);
+// avl.insert(20);
+// avl.insert(30);
+// avl.insert(40);
+// avl.insert(50);
+// avl.insert(25);
+// var avlJSON = avl.toJSON();
+// console.log(JSON.stringify(avlJSON,null,2));
