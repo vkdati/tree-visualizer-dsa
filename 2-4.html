@@ -2,168 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css"> 
+    <script src="https://d3js.org/d3.v7.min.js"></script> <!-- Include D3.js -->
     <title>2-4 Tree Visualizer</title>
-    <style>
-        .node {
-            display: inline-block;
-            border: 1px solid black;
-            border-radius: 5px;
-            padding: 10px;
-            margin: 5px;
-            text-align: center;
-            background-color: #f0f0f0;
-        }
-        .tree {
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
-            margin-bottom: 20px;
-        }
-        .level {
-            display: flex;
-            justify-content: center;
-        }
-    </style>
 </head>
 <body>
-  
     <div class="container">
         <h1>2-4 Tree Visualizer</h1>
 
-        <div class="svgcontainer" overflow='hidden'>
-            <div id="treeContainer" class="tree"></div> <!-- Tree will be drawn here -->
-        </div>
+        <!-- SVG container for visualizing the 2-4 tree -->
+        <div class="svgcontainer"></div>
         
         <div class="inptContainer">
-            <input type="number" id="insertKey" placeholder="Enter number to insert">
+            <!-- Input area to enter numbers for the tree -->
+            <textarea type="text" id="inpt" placeholder="Enter numbers separated by space"></textarea>
+
+            <!-- Button section -->
             <div class="buttonContainer">
-                <button class="insertbtn" onclick="insertNode()">Insert Value</button>
+                <button class="createbtn" onclick="getInpt()">Create Tree</button>
+                <button class="searchbtn" onclick="searchNode()">Search Value</button>
+                <button class="deletebtn" onclick="deleteNode()">Delete Value</button>
             </div>
+
+            <!-- Input field for search/delete operations -->
+            <input type="number" id="searchkey" placeholder="Enter number to search/delete">
         </div>
 
+        <!-- Output area for status updates -->
         <div class="outptcontainer">
             <h2 id="keystatus"></h2>
         </div>
     </div>
 
-    <script>
-        class Node {
-            constructor(values = [], parent = null) {
-                this.values = values; // Array to store values in the node
-                this.children = [];    // Array to store child nodes
-                this.parent = parent;  // Reference to the parent node
-            }
-
-            isLeaf() {
-                return this.children.length === 0; // Check if the node is a leaf node
-            }
-
-            isFull() {
-                return this.values.length === 3; // Check if the node is full (can hold up to 3 values)
-            }
-
-            split() {
-                const midValue = this.values[1]; // Middle value to promote
-                const leftChild = new Node(this.values.slice(0, 1), this.parent);
-                const rightChild = new Node(this.values.slice(2), this.parent);
-
-                if (!this.isLeaf()) {
-                    leftChild.children = this.children.slice(0, 2); // Transfer left children
-                    rightChild.children = this.children.slice(2);   // Transfer right children
-                    leftChild.children.forEach(child => child.parent = leftChild); // Set parent
-                    rightChild.children.forEach(child => child.parent = rightChild); // Set parent
-                }
-
-                return { leftChild, rightChild, midValue }; // Return the split result
-            }
-        }
-
-        class TwoFourTree {
-            constructor() {
-                this.root = new Node(); // Create the root node
-            }
-
-            insert(value) {
-                let node = this.root;
-                while (true) {
-                    if (node.isLeaf()) {
-                        node.values.push(value);
-                        node.values.sort((a, b) => a - b); // Maintain sorted order
-
-                        if (node.isFull()) {
-                            this.splitNode(node); // Split if node is full
-                        }
-                        break; // Exit loop after insertion
-                    } else {
-                        let i = 0;
-                        while (i < node.values.length && value > node.values[i]) {
-                            i++;
-                        }
-                        node = node.children[i]; // Move to the appropriate child
-                    }
-                }
-                this.drawTree(); // Call drawTree to visualize the updated tree
-                document.getElementById('keystatus').innerText = `Inserted: ${value}`; // Update status
-            }
-
-            splitNode(node) {
-                const { leftChild, rightChild, midValue } = node.split();
-                if (node === this.root) {
-                    // Create a new root if splitting the root
-                    this.root = new Node([midValue]);
-                    this.root.children.push(leftChild, rightChild);
-                    leftChild.parent = this.root;
-                    rightChild.parent = this.root;
-                } else {
-                    // Insert the mid value into the parent node
-                    const parent = node.parent;
-                    parent.values.push(midValue);
-                    parent.values.sort((a, b) => a - b);
-                    const index = parent.children.indexOf(node);
-                    parent.children.splice(index, 1, leftChild, rightChild);
-                    leftChild.parent = parent; // Set parent for left child
-                    rightChild.parent = parent; // Set parent for right child
-
-                    if (parent.isFull()) {
-                        this.splitNode(parent); // Split the parent if it becomes full
-                    }
-                }
-            }
-
-            drawTree() {
-                const treeContainer = document.getElementById('treeContainer');
-                treeContainer.innerHTML = ''; // Clear previous tree visualization
-                this._drawNode(this.root, treeContainer); // Draw the tree from the root
-            }
-
-            _drawNode(node, parentElement) {
-                if (node) {
-                    const nodeElement = document.createElement('div');
-                    nodeElement.className = 'node';
-                    nodeElement.innerText = node.values.join(', '); // Display values in the node
-                    parentElement.appendChild(nodeElement);
-
-                    if (!node.isLeaf()) {
-                        const childrenContainer = document.createElement('div');
-                        childrenContainer.className = 'level'; // Create a new level for children
-                        parentElement.appendChild(childrenContainer);
-                        node.children.forEach(child => this._drawNode(child, childrenContainer)); // Recursively draw children
-                    }
-                }
-            }
-        }
-
-        const tree = new TwoFourTree(); // Create a new 2-4 tree instance
-
-        function insertNode() {
-            const value = parseInt(document.getElementById('insertKey').value);
-            if (!isNaN(value)) {
-                tree.insert(value);
-                document.getElementById('insertKey').value = ''; // Clear input field
-            }
-        }
-    </script>
+    <!-- Ensure JS logic files are loaded after the DOM is ready -->
+    <script src="./logic/tree24Draw.js"></script>
+    <script src="./logic/tree24.js"></script>
+    <script src="./logic/tree24Index.js"></script>
 </body>
 </html>
