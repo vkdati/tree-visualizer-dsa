@@ -161,7 +161,7 @@ class AVLTree {
       }
   }
 
-  // Insert multiple values into the AVL tree
+  // Insert one value at a time into the AVL tree
   takeInpt(arr) {
       for (let i = 0; i < arr.length; i++) {
           this.insert(arr[i]);
