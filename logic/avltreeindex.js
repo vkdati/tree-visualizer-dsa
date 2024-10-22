@@ -20,6 +20,10 @@ function getInpt()
     // newTree.takeInpt(num);
     // initializeZoom();\
     var value = parseInt(document.getElementById("inptkey").value);
+    if(value=="")
+    {
+        return;
+    }
     document.getElementById("inptkey").value = "";
     Tree.takeInpt(value);
     initializeZoom();
@@ -35,3 +39,15 @@ function initializeZoom(){
     }
     d3.select('svg').call(zoom);
     }
+    function searchNode()
+{
+    
+    var searchInpt = document.getElementById("inptkey").value;
+    var searchKey = parseInt(searchInpt);
+    if (searchInpt== "")
+    {
+        return;
+    }
+    search(searchKey);
+    
+}
