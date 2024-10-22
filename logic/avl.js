@@ -11,12 +11,14 @@ class AVLNode {
 class AVLTree {
   constructor() {
       this.root = null; // Root of the AVL tree
+      this.size = 0;
   }
 
   // Insert a new node in the AVL tree
   insert(value) {
       const newNode = new AVLNode(value);
       this.root = this.insertNode(this.root, newNode);
+      this.size++;
   }
 
   // Helper function to insert a node in the correct position and balance the tree
@@ -162,13 +164,17 @@ class AVLTree {
   }
 
   // Insert one value at a time into the AVL tree
-  takeInpt(arr) {
-      for (let i = 0; i < arr.length; i++) {
-          this.insert(arr[i]);
-      }
-      this.removeTree();
-      console.log(JSON.stringify(this.toJSON(), null, 2));
-      drawTree(this.toJSON(), arr.length);
+  takeInpt(val) {
+    //   for (let i = 0; i < arr.length; i++) {
+    //       this.insert(arr[i]);
+    //   }
+    //   this.removeTree();
+    //   console.log(JSON.stringify(this.toJSON(), null, 2));
+    //   drawTree(this.toJSON(), arr.length);
+    this.insert(val);
+    this.removeTree();
+    console.log(JSON.stringify(this.toJSON(),null,2));
+    drawTree(this.toJSON(),this.size);
   }
 
   // Get the root of the AVL tree
