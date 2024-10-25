@@ -65,7 +65,7 @@ class AVLTree {
 
       return node; // Return the unchanged node pointer
   }
-
+  
   // Helper function to get the height of the node
   getHeight(node) {
       if (node === null) {
@@ -174,13 +174,40 @@ class AVLTree {
     this.insert(val);
     this.removeTree();
     console.log(JSON.stringify(this.toJSON(),null,2));
-    drawTree(this.toJSON(),this.size);
+    drawTree(this.toJSON(),this.size,this);
   }
 
   // Get the root of the AVL tree
   getRoot() {
       return this.root;
   }
+  clear()
+  {
+    this.root = null;
+    this.size = 0;
+  }
+  newJson(jsonNode)
+  {
+    this.clear();
+    this.insertFromJSON(jsonNode);
+    console.log(JSON.stringify(this.toJSON(),null,2));
+    drawTree(this.toJSON(),this.size,this);
+  }
+  insertFromJSON(jsonNode) {
+
+    if (jsonNode === null) {
+        return; // Base case: if the node is null, do nothing
+    }
+
+    // Insert the value of the current node
+    this.insert(jsonNode.value);
+
+    // Recursively insert children
+    for (const child of jsonNode.children) {
+        this.insertFromJSON(child); // Insert each child node
+    }
+    
+}
 }
 
 // Test code

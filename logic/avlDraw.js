@@ -1,8 +1,9 @@
 //add the d3 rendering stuff
-function drawTree(data,size)
+function drawTree(data,size,Tree)
 {
    console.log(size);
    window.sizeOfArray = size;
+   window.Tree = Tree;
     const margin = {
         top: 50,
         right: 5,
@@ -133,4 +134,142 @@ function recurseSearch(node,key)
             }
     });
     
+}
+function deleteKey(key)
+{
+    //resetting colors
+    d3.selectAll(".node").select('circle').
+    style("fill", function (d, i) {
+
+        return (d.children && !(d.children[0].data.value == "Empty" && d.children[1].data.value == "Empty")) || d._children ? '#f0bc3e' : 'lightgray';
+    })
+    recurseDelete(window.root,key);
+
+}
+function removeTree()
+    {
+        var graph = document.querySelector("svg");
+        if(graph){graph.parentElement.removeChild(graph)};
+    }
+function recurseDelete(node,key)
+{
+    if(node.data.value == key && !node.children)
+    {
+        //delete node
+        //color the node red
+        d3.selectAll(".node").filter(function(d) {return d.data.value==node.data.value;}).select('circle')
+        .transition()
+        .duration(500)
+        .ease(d3.easeLinear)
+        .style("fill","red").
+        on("end",function(){
+        node.data.value = "Empty";
+
+        d3.selectAll(".node").filter(function(d) {return d.data.value==node.data.value;}).select('text')
+        .transition()
+        .duration(1000) //changing text
+        .ease(d3.easeLinear)
+        .text("Empty")
+        .on("end",function(){;
+        console.log("delete node of value",key);
+        removeTree();
+        window.Tree.newJson(JSON.parse(JSON.stringify(window.root.data)));
+        
+        // drawTree(JSON.parse(JSON.stringify(window.root.data,null,2)),window.sizeOfArray);
+        // console.log(JSON.stringify(window.root.data,null,2));
+        })});
+        return;
+    }
+    if(node.data.value == key && node.children)
+    {
+        var tempNode = getSuccessorOrPredecessor(node);
+        console.log("value of tempnode is ",tempNode.data.value," finding succ/pre for ",node.data.value);
+        //ease this value in
+        //some color change
+        d3.selectAll(".node").filter(function(d) {return d.data.value==node.data.value;}).select('circle')
+        .transition()
+        .duration(500)
+        .ease(d3.easeLinear)
+        .style("fill","#c655fa")
+        .on("end",function(){
+         node.data.value = tempNode.data.value;
+        d3.selectAll(".node").filter(function(d) { return d.data.value == node.data.value; })
+        .select('text')
+        .transition()
+        .duration(500)
+        .tween("text", function(d) {
+            var that = this;
+            var i = d3.interpolate(this.textContent, d.data.value);
+            return function(t) {
+                that.textContent = Math.round(i(t)); 
+            };
+        }).on("end",function(){
+            recurseDelete(tempNode,tempNode.data.value);
+        })});
+        return;
+    }
+    if(!node.children && node.data.value != key)
+    {
+        //node not found
+        console.log("node not found");
+        return;
+    }
+    d3.selectAll(".node").filter(function(d) {return d.data.value==node.data.value;}).select('circle')
+    .transition()
+    .duration(500)
+    .ease(d3.easeLinear)
+    .style("fill","#5adb6d") //green for traversal
+    .on("end",function()
+    {
+    if(key<node.data.value)
+    {
+        //color for recursive travel
+        recurseDelete(node.children[0],key);
+    }
+    if(key>node.data.value)
+    {
+        recurseDelete(node.children[1],key);
+    }
+    });
+}
+function getSuccessorOrPredecessor(node)
+{
+    if(!node.children)
+    {
+        console.log("no children",node.data.value);
+        return node;
+    }  // preference to successor
+    if(node.children[1].data.value != "Empty")
+    {
+        console.log(node.children);
+        node = node.children[1];
+        console.log("successor",node.data.value);
+        while(node.children)
+        {
+            if(node.children[0].data.value == "Empty")
+            {
+                break;
+            }
+            node = node.children[0];
+        }
+        
+        return node;
+    }
+    else
+    {
+        node = node.children[0];  //finding predecessor
+       console.log("predecessor",node.data.value);
+        while(node.children)
+        {
+            if(node.children[1].data.value == "Empty")
+            {
+                break;
+            }
+            node = node.children[1];
+        }
+        
+        return node;
+
+    }
+
 }
