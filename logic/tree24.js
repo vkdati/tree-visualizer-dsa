@@ -19,6 +19,7 @@ class Node24 {
 class Tree24 {
     constructor() {
         this.root = new Node24();  // an empty node
+        this.size = 0;
     }
 
     // insert a new key into the 2-4 tree
@@ -36,6 +37,7 @@ class Tree24 {
 
             // update the root
             this.root = newRoot;
+            this.size = this.size + 1;
         }
 
         this.insertNonFull(this.root, value); // insert the value into the non-full node
@@ -46,6 +48,7 @@ class Tree24 {
         if (node.isLeaf) {
      
             node.insertKey(value);
+            this.size++;
         } else {
             // If it's an internal node, find the correct child to insert the value
             let i = node.keys.length - 1;
@@ -111,20 +114,26 @@ class Tree24 {
         if (!node) {
             return null; // Base case: empty node
         }
-
+        
         const jsonNode = {
             keys: node.keys.slice(), // Copy the keys in this node
             children: [] // Initialize an empty array for children
         };
-
+        
+        // Recursively add children nodes
         if (!node.isLeaf) {
-            // Recursively add children nodes if it's not a leaf
             for (let i = 0; i < node.children.length; i++) {
                 jsonNode.children.push(this.toJSON(node.children[i]));
             }
+        
+            // Add "Empty" placeholders for missing children if needed
+            while (jsonNode.children.length < 4) {
+                jsonNode.children.push({ keys: ["Empty"], children: [] });
+            }
         }
-
+        
         return jsonNode;
+        
     }
 
     // Remove existing SVG tree visualization
@@ -137,13 +146,14 @@ class Tree24 {
     }
 
   
-    takeInpt(arr) {
-        for (let i = 0; i < arr.length; i++) {
-            this.insert(arr[i]); 
-        }
+    takeInpt(val) {
+        // for (let i = 0; i < arr.length; i++) {
+        //     this.insert(arr[i]); 
+        // }
+        this.insert(val);
         this.removeTree(); // Remove any existing tree visualization
-        console.log(JSON.stringify(this.toJSON(), null, 2)); // Print the JSON representation of the tree
-        drawTree2_4(this.toJSON()); // Visualize the tree (you need to implement the drawTree2_4 function)
+        console.log(JSON.stringify(this.toJSON(),2,null)); // Print the JSON representation of the tree
+        drawTree2_4(this.toJSON(),this.size) // Visualize the tree (you need to implement the drawTree2_4 function)
     }
 
     // Get the root of the 2-4 tree
@@ -159,3 +169,4 @@ class Tree24 {
 // tree.takeInpt(arr); // Insert the values into the 2-4 tree and visualize it
 // console.log(tree.getRoot()); // Get the root of the tree
 // tree.inOrderTraversal(); // Perform in-order traversal to print values in ascending order
+// console.log(JSON.stringify(tree.toJSON(),2,null));

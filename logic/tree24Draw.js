@@ -1,4 +1,6 @@
+
 function drawTree2_4(data, size) {
+    
     
     const margin = { top: 50, right: 20, bottom: 20, left: 20 };
     const width = 800 - margin.left - margin.right;
@@ -16,23 +18,33 @@ function drawTree2_4(data, size) {
     const nodes = root.descendants();
 
     // Filter out any "Empty" nodes if necessary
-    const filteredNodes = nodes.filter(d => d.data.keys.length > 0);
-    const filteredLinks = links.filter(link => 
-        filteredNodes.includes(link.source) && filteredNodes.includes(link.target)
-    );
+    // const filteredNodes = nodes.filter(d => d.data.keys.length > 0);
+    // const filteredLinks = links.filter(link => 
+    //     filteredNodes.includes(link.source) && filteredNodes.includes(link.target)
+    // );
 
-    // Set vertical spacing based on depth
-    filteredNodes.forEach(d => {
-        d.y = d.depth * 100;  
+    // // Set vertical spacing based on depth
+    // filteredNodes.forEach(d => {
+    //     d.y = d.depth * 100;  
+    // });
+    const filteredNodes = root.descendants().filter(d => d.data.value !== "Empty");
+    const filteredLinks = root.links().filter(d => filteredNodes.includes(d.source) && filteredNodes.includes(d.target));
+
+    filteredNodes.forEach(function(d)
+    {
+    d.y = d.depth*70; //scaling
+    
     });
 
     // Create an SVG container
     const svg = d3.select('.svgcontainer')
-        .append('svg')
-        .attr('width', width + margin.left + margin.right)
-        .attr('height', height + margin.top + margin.bottom)
-        .append('g')
-        .attr('transform', `translate(${margin.left}, ${margin.top})`);
+    .append('svg')
+    .attr('id','outputsvg')
+    .attr('onload','initializeZoom()')
+    .attr('width', 1000)
+    .attr('height', width)
+    .append('g')
+    .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
     // Draw links
     svg.selectAll('.link')

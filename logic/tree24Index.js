@@ -1,43 +1,13 @@
+var Tree = new Tree24();
 function getInpt() {
     
-    var value = document.getElementById("inpt").value;
-    
-    // Split string into substrings arr
-    var arr = value.split(" ");
-    
-    // Initialize an empty array
-    var num = [];
-
-    // Loop through the arr of substrings
-    for (let i = 0; i < arr.length; i++) {
-        // Remove non-numeric characters(-ve no possible)
-        var cleanedStr = arr[i].replace(/[^-\d]/g, '');
-
-        // Skip empty strings
-        if (cleanedStr == '') continue;
-
-        // Convert the cleaned str to an int
-        var intval = parseInt(cleanedStr, 10);
-
-        // Skip if the converted value is not a valid no.
-        if (isNaN(intval)) continue;
-
-        // Push valid integers to the num array
-        num.push(intval);
+    var value = parseInt(document.getElementById("inptkey").value);
+    if(value=="")
+    {
+        return;
     }
-
-    // Create a new 2-4 tree instance
-    var newTree = new Tree24();
-
-    // Take the valid numbers and insert them into the 2-4 tree
-    for (let i = 0; i < num.length; i++) {
-        newTree.insert(num[i]); // Inserting value
-    }
-
-    // Store the new tree as a global variable to access during search and delete
-    window.currentTree = newTree;
-
-    //  zoom functionality for the tree
+    document.getElementById("inptkey").value = "";
+    Tree.takeInpt(value);
     initializeZoom();
 }
 
@@ -56,21 +26,13 @@ function initializeZoom() {
 }
 
 function searchNode() {
-    // Get the value entered in the search input field
-    var searchInpt = document.getElementById("searchkey").value;
-
-    // Parse the value to an integer
+    var searchInpt = document.getElementById("inptkey").value;
     var searchKey = parseInt(searchInpt);
-
-    // If input is empty or not a number, return without doing anything
-    if (isNaN(searchKey) || searchInpt === "") {
+    if (searchInpt== "")
+    {
         return;
     }
-
-    // Call the search function to find the node in the 2-4 tree
-    if (window.currentTree) {
-        window.currentTree.search(searchKey);  // Assuming search is a method of Tree24
-    }
+    search(searchKey);
 }
 
 function deleteNode() {

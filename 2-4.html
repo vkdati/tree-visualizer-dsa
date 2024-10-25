@@ -12,33 +12,26 @@
     <div class="container">
         <h1>2-4 Tree Visualizer</h1>
 
-        <!-- SVG container for visualizing the 2-4 tree -->
-        <div class="svgcontainer"></div>
-        
-        <div class="inptContainer">
-            <!-- Input area to enter numbers for the tree -->
-            <textarea type="text" id="inpt" placeholder="Enter numbers separated by space"></textarea>
-
-            <!-- Button section -->
-            <div class="buttonContainer">
-                <button class="createbtn" onclick="getInpt()">Create Tree</button>
-                <button class="searchbtn" onclick="searchNode()">Search Value</button>
-                <button class="deletebtn" onclick="deleteNode()">Delete Value</button>
-            </div>
-
-            <!-- Input field for search/delete operations -->
-            <input type="number" id="searchkey" placeholder="Enter number to search/delete">
+        <div class = "svgcontainer" overflow = 'hidden'>
         </div>
-
-        <!-- Output area for status updates -->
-        <div class="outptcontainer">
+        <div class = "inptContainer">
+          <input type="number" id="inptkey" placeholder="Enter number to process">
+            <div class = "buttonContainer">
+                 <button class="lockbtn" onclick = "getInpt()">Insert Number</button>
+                 <button class = "searchbtn" onclick="searchNode()">Search For Value</button>
+                 <!-- <button class = "deletebtn" onclick="deleteNode()">Delete This Value</button>   -->
+    
+            </div>
+            
+        </div>
+        <div class = "outptcontainer">
             <h2 id="keystatus"></h2>
         </div>
     </div>
 
     <!-- Ensure JS logic files are loaded after the DOM is ready -->
-    <script src="./logic/tree24Draw.js"></script>
-    <script src="./logic/tree24.js"></script>
-    <script src="./logic/tree24Index.js"></script>
+    <script src="logic/tree24.js"></script>
+    <script src="logic/tree24Draw.js"></script>
+    <script src="logic/tree24Index.js"></script>
 </body>
 </html>
