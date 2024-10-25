@@ -1,17 +1,18 @@
 
-    class Node {
-      constructor(data) {
+class Node {
+  constructor(data) {
         this.data = data;
         this.color = "RED";
         this.left = null;
         this.right = null;
         this.parent = null;
       }
-    }
+}
 
-    class Tree {
+class RedBlackTree {
       constructor() {
         this.root = null;
+        this.size = 0;
       }
 
       rotateL(x) {
@@ -96,6 +97,7 @@
 
         z.color = "RED";
         this.fix(z);
+        this.size++;
       }
 
       inorder(node, res) {
@@ -111,16 +113,57 @@
         this.inorder(this.root, res);
         return res.join(" ");
       }
-    }
+      toJSON(node = this.root) {
+        if (node === null) {
+            return null; // If the node is null, return null
+        }
 
-    const tree = new Tree();
+        // Create a JSON object for the current node
+        const jsonNode = {
+            value: node.data,
+            children: [], // Initialize an empty array for children
+            color : node.color
+        };
 
-    function addNode() {
-      const val = parseInt(document.getElementById("val").value);
-      if (!isNaN(val)) {
-        tree.insert(val);
-        document.getElementById("out").textContent = "In-order: " + tree.display();
-        document.getElementById("val").value = "";
-      }
+        // Recursively convert left and right children to JSON
+        if (node.left || node.right) { // Only add children if they exist
+            if (node.left) {
+                jsonNode.children.push(this.toJSON(node.left)); // Add left child
+            } else {
+                jsonNode.children.push({ value: "Empty", children: [], color : "NONE" }); // Add an "Empty" node
+            }
+
+            if (node.right) {
+                jsonNode.children.push(this.toJSON(node.right)); // Add right child
+            } else {
+                jsonNode.children.push({ value: "Empty", children: [], color: "NONE" }); // Add an "Empty" node
+            }
+        }
+
+        return jsonNode; // Return the JSON representation of the node
     }
+    removeTree()
+    {
+      var graph = document.querySelector("svg");
+      if(graph){graph.parentElement.removeChild(graph)};
+    }
+}
+
+    // const tree = new Tree();
+
+    // function addNode() {
+    //   const val = parseInt(document.getElementById("val").value);
+    //   if (!isNaN(val)) {
+    //     tree.insert(val);
+    //     document.getElementById("out").textContent = "In-order: " + tree.display();
+    //     document.getElementById("val").value = "";
+    //   }
+    // }
+// const tree = new RedBlackTree();
+// tree.insert(5);
+// tree.insert(15);
+// tree.insert(3);
+// tree.insert(7);
+// console.log(JSON.stringify(tree.toJSON(),null,2));
+    
 
