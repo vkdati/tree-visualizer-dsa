@@ -51,3 +51,18 @@ function initializeZoom(){
     search(searchKey);
     
 }
+function deleteNode()
+{
+    var deleteInpt = document.getElementById("inptkey").value;
+    if(deleteInpt == "")
+    {
+        return;
+    }
+    deleteKey(parseInt(deleteInpt));
+    console.log(JSON.stringify(Tree.toJSON(),null,2));
+    
+    //Tree.rebalanceTree();
+   // Tree.removeTree();
+   
+    //drawTree(Tree.toJSON(),Tree.size);
+}
