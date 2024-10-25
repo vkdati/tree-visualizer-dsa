@@ -1,56 +1,48 @@
 class Node24 {
     constructor() {
-        this.keys = [];      
-        this.children = [];  
-        this.isLeaf = true; 
+        this.keys = [];
+        this.children = [];
+        this.isLeaf = true;
     }
 
- 
     insertKey(key) {
         this.keys.push(key);
-        this.keys.sort((a, b) => a - b);  
+        this.keys.sort((a, b) => a - b);  // Sort keys in ascending order
     }
 
     isFull() {
-        return this.keys.length === 3;
+        return this.keys.length === 3;  // 2-4 trees allow up to 3 keys
     }
 }
 
 class Tree24 {
     constructor() {
-        this.root = new Node24();  // an empty node
-        this.size = 0;
+        this.root = new Node24();  // Start with an empty root node
     }
 
-    // insert a new key into the 2-4 tree
     insert(value) {
         const root = this.root;
 
         if (root.isFull()) {
-            // if the root is full, split it and create a new root
+            // If the root is full, split it and create a new root
             const newRoot = new Node24();
-            newRoot.isLeaf = false; //new root is not a leaf
-            newRoot.children.push(this.root); // make the current root a child of the new root
+            newRoot.isLeaf = false; // The new root is not a leaf
+            newRoot.children.push(this.root); // Old root becomes a child
 
-            // split the full root
+            // Split the full root
             this.splitNode(newRoot, 0);
 
-            // update the root
+            // Update the root reference
             this.root = newRoot;
-            this.size = this.size + 1;
         }
 
-        this.insertNonFull(this.root, value); // insert the value into the non-full node
+        this.insertNonFull(this.root, value); // Insert the value in the non-full node
     }
 
-    // Insert into a non-full node
     insertNonFull(node, value) {
         if (node.isLeaf) {
-     
-            node.insertKey(value);
-            this.size++;
+            node.insertKey(value);  // Insert the key if it's a leaf node
         } else {
-            // If it's an internal node, find the correct child to insert the value
             let i = node.keys.length - 1;
             while (i >= 0 && value < node.keys[i]) {
                 i--;
@@ -58,115 +50,69 @@ class Tree24 {
             i++;
 
             if (node.children[i].isFull()) {
-                // If the child is full, split it
-                this.splitNode(node, i);
+                this.splitNode(node, i);  // Split the child if it's full
 
-                // After splitting, decide which child to go to
                 if (value > node.keys[i]) {
                     i++;
                 }
             }
 
-            this.insertNonFull(node.children[i], value); // Recursion used
+            this.insertNonFull(node.children[i], value); // Recursively insert
         }
     }
 
-    // Split a full child node of a given parent node at index i
     splitNode(parent, i) {
         const fullChild = parent.children[i];
         const newChild = new Node24();
-
         newChild.isLeaf = fullChild.isLeaf;
 
-        // Moving the keys
-        const midKey = fullChild.keys[1];
-        parent.keys.splice(i, 0, midKey);
+        const midKey = fullChild.keys[1]; // Middle key to move up
+        parent.keys.splice(i, 0, midKey); // Add the middle key to the parent
 
-        // Splitting one node into two
-        newChild.keys = fullChild.keys.splice(2, 1); // Right half
-        fullChild.keys.splice(1); // Left half
+        newChild.keys = fullChild.keys.splice(2); // Right half keys
+        fullChild.keys.splice(1);  // Left half keys
 
-        // If the full child has children, split them as well
         if (!fullChild.isLeaf) {
-            newChild.children = fullChild.children.splice(2, 2); // right half of the children
+            newChild.children = fullChild.children.splice(2); // Right half children
         }
 
-        parent.children.splice(i + 1, 0, newChild); // insert the new child into the parent's children
+        parent.children.splice(i + 1, 0, newChild); // Insert new child
     }
 
-    inOrderTraversal(node = this.root) {
-        if (node) {
-            for (let i = 0; i < node.keys.length; i++) {
-                if (!node.isLeaf) {
-                    this.inOrderTraversal(node.children[i]); 
-                }
-                console.log(node.keys[i]); 
-            }
-
-            if (!node.isLeaf) {
-                this.inOrderTraversal(node.children[node.keys.length]);
-            }
-        }
-    }
-
-  //Json- JSON (JavaScript Object Notation) is a lightweight format used for storing and exchanging data. It is easy to read and write for humans, and easy to parse and generate for machines.
     toJSON(node = this.root) {
-        if (!node) {
-            return null; // Base case: empty node
-        }
-        
+        if (!node) return null;
+
         const jsonNode = {
-            keys: node.keys.slice(), // Copy the keys in this node
-            children: [] // Initialize an empty array for children
+            keys: node.keys.slice(), // Copy keys
+            children: []  // Empty array for children
         };
-        
-        // Recursively add children nodes
+
         if (!node.isLeaf) {
             for (let i = 0; i < node.children.length; i++) {
                 jsonNode.children.push(this.toJSON(node.children[i]));
             }
-        
-            // Add "Empty" placeholders for missing children if needed
-            while (jsonNode.children.length < 4) {
-                jsonNode.children.push({ keys: ["Empty"], children: [] });
-            }
         }
-        
+
         return jsonNode;
-        
     }
 
-    // Remove existing SVG tree visualization
-    //SVG (Scalable Vector Graphics) is a type of image format used to create graphics on websites.
     removeTree() {
         const graph = document.querySelector("svg");
         if (graph) {
-            graph.parentElement.removeChild(graph); // Remove the SVG element if it exists
+            graph.parentElement.removeChild(graph); // Remove any existing SVG graph
         }
     }
 
-  
-    takeInpt(val) {
-        // for (let i = 0; i < arr.length; i++) {
-        //     this.insert(arr[i]); 
-        // }
-        this.insert(val);
-        this.removeTree(); // Remove any existing tree visualization
-        console.log(JSON.stringify(this.toJSON(),2,null)); // Print the JSON representation of the tree
-        drawTree2_4(this.toJSON(),this.size) // Visualize the tree (you need to implement the drawTree2_4 function)
+    takeInpt(arr) {
+        for (let i = 0; i < arr.length; i++) {
+            this.insert(arr[i]);
+        }
+        this.removeTree();  // Remove existing tree visualization
+        console.log(JSON.stringify(this.toJSON(), null, 2));  // Print the tree as JSON
+        drawTree2_4(this.toJSON());  // Visualize the tree
     }
 
-    // Get the root of the 2-4 tree
     getRoot() {
         return this.root;
     }
 }
-
-// D3.js (Data-Driven Documents): a powerful JavaScript library used for creating dynamic and interactive data visualizations in the web browser. It allows you to bind data to HTML, SVG, or CSS elements and apply data-driven transformations to the document.
-// Example usage:
-// const tree = new Tree24();
-// const arr = [10, 20, 5, 15, 25, 30, 35]; // Example values to insert
-// tree.takeInpt(arr); // Insert the values into the 2-4 tree and visualize it
-// console.log(tree.getRoot()); // Get the root of the tree
-// tree.inOrderTraversal(); // Perform in-order traversal to print values in ascending order
-// console.log(JSON.stringify(tree.toJSON(),2,null));
