@@ -13,14 +13,24 @@ class Node24 {
     isFull() {
         return this.keys.length === 3;  // 2-4 trees allow up to 3 keys
     }
+
+    containsKey(key) {
+        return this.keys.includes(key);  // Check if the key already exists
+    }
 }
 
 class Tree24 {
     constructor() {
         this.root = new Node24();  // Start with an empty root node
+        this.size = 0;
     }
 
     insert(value) {
+        if (this.contains(value, this.root)) {
+            console.log(`Duplicate value ${value} not inserted.`);
+            return;  // Prevent duplicate insertion
+        }
+
         const root = this.root;
 
         if (root.isFull()) {
@@ -42,6 +52,7 @@ class Tree24 {
     insertNonFull(node, value) {
         if (node.isLeaf) {
             node.insertKey(value);  // Insert the key if it's a leaf node
+            this.size++;
         } else {
             let i = node.keys.length - 1;
             while (i >= 0 && value < node.keys[i]) {
@@ -77,6 +88,24 @@ class Tree24 {
         }
 
         parent.children.splice(i + 1, 0, newChild); // Insert new child
+    }
+
+    contains(value, node = this.root) {
+        // Recursively check if the value already exists in the tree
+        if (node.containsKey(value)) {
+            return true;
+        }
+
+        if (node.isLeaf) {
+            return false;
+        }
+
+        let i = 0;
+        while (i < node.keys.length && value > node.keys[i]) {
+            i++;
+        }
+
+        return this.contains(value, node.children[i]);
     }
 
     toJSON(node = this.root) {

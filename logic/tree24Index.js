@@ -1,59 +1,30 @@
+var Tree = new Tree24();
 function getInpt() {
     
-    var value = document.getElementById("inpt").value;
-    
-    // Split string into substrings arr
-    var arr = value.split(" ");
-    
-    // Initialize an empty array
-    var num = [];
-
-    // Loop through the arr of substrings
-    for (let i = 0; i < arr.length; i++) {
-        // Remove non-numeric characters(-ve no possible)
-        var cleanedStr = arr[i].replace(/[^-\d]/g, '');
-
-        // Skip empty strings
-        if (cleanedStr == '') continue;
-
-        // Convert the cleaned str to an int
-        var intval = parseInt(cleanedStr, 10);
-
-        // Skip if the converted value is not a valid no.
-        if (isNaN(intval)) continue;
-
-        // Push valid integers to the num array
-        num.push(intval);
+    var input = parseInt(document.getElementById("inptkey").value);
+    console.log(input);
+    if(input==NaN)
+    {
+        return;
     }
-
-    // Create a new 2-4 tree instance
-    var newTree = new Tree24();
-
-    // Take the valid numbers and insert them into the 2-4 tree
-    for (let i = 0; i < num.length; i++) {
-        newTree.insert(num[i]); // Inserting value
-    }
-
-    // Store the new tree as a global variable to access during search and delete
-    window.currentTree = newTree;
-
-    //  zoom functionality for the tree
+    document.getElementById("inptkey").value = "";
+    Tree.insert(input);
+    Tree.removeTree();
+    drawTree(Tree.toJSON(),Tree.size);
     initializeZoom();
 }
 
-function initializeZoom() {
-    // Define the zoom behavior using D3.js
-    let zoom = d3.zoom().on('zoom', handleZoom);
-
-    // Handle zoom by transforming the SVG group element
-    function handleZoom(e) {
+function initializeZoom(){
+    let zoom = d3.zoom()
+    .on('zoom',handleZoom);
+    function handleZoom(e)
+    {
+       
         d3.select('svg g')
-            .attr('transform', e.transform);
+        .attr('transform',e.transform);
     }
-
-    // Apply the zoom behavior to the SVG element
     d3.select('svg').call(zoom);
-}
+    }
 
 function searchNode() {
     // Get the value entered in the search input field
