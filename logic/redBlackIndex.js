@@ -26,3 +26,16 @@ function initializeZoom(){
     }
     d3.select('svg').call(zoom);
     }
+
+    function searchNode()
+{
+    
+    var searchInpt = document.getElementById("inptkey").value;
+    var searchKey = parseInt(searchInpt);
+    if (searchInpt== "")
+    {
+        return;
+    }
+    search(searchKey);
+    
+}

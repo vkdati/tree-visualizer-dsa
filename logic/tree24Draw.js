@@ -99,7 +99,7 @@ function drawTree(data, size) {
 
 function search(key) {
     // Resetting colors
-    d3.selectAll(".node").select('circle')
+    d3.selectAll(".node").select('rect')
         .style("fill", function (d, i) {
             return (d.children && !(d.children[0].data.keys.length === 0 && d.children[1].data.keys.length === 0)) || d._children ? '#f0bc3e' : 'lightgray'; 
         });
@@ -110,7 +110,7 @@ function search(key) {
   
 function search(key) {
     // Resetting colors
-    d3.selectAll(".node").select('circle')
+    d3.selectAll(".node").select('rect')
         .style("fill", function (d, i) {
             return (d.children && d.children.length > 0) || d._children ? '#f0bc3e' : 'lightgray'; 
         });
@@ -122,7 +122,7 @@ function search(key) {
 function recurseSearch(node, key) {
     if (!node.children.length && node.keys[0] !== key && node.keys[1] !== key && node.keys[2] !== key) {
         console.log("key not found");
-        d3.selectAll(".node").filter(function(d) { return d.keys.includes(node.keys[0]) || d.keys.includes(node.keys[1]) || d.keys.includes(node.keys[2]); }).select('circle')
+        d3.selectAll(".node").filter(function(d) { return d.keys.includes(node.keys[0]) || d.keys.includes(node.keys[1]) || d.keys.includes(node.keys[2]); }).select('rect')
             .transition()
             .duration(500)
             .ease(d3.easeLinear)
@@ -134,7 +134,7 @@ function recurseSearch(node, key) {
     }
 
     if (node.keys.includes(key)) {
-        d3.selectAll(".node").filter(function(d) { return d.keys.includes(node.keys[0]) || d.keys.includes(node.keys[1]) || d.keys.includes(node.keys[2]); }).select('circle')
+        d3.selectAll(".node").filter(function(d) { return d.keys.includes(node.keys[0]) || d.keys.includes(node.keys[1]) || d.keys.includes(node.keys[2]); }).select('rect')
             .transition()
             .duration(500)
             .ease(d3.easeLinear)
@@ -145,7 +145,7 @@ function recurseSearch(node, key) {
         return;
     }
 
-    d3.selectAll(".node").filter(function(d) { return d.keys.includes(node.keys[0]) || d.keys.includes(node.keys[1]) || d.keys.includes(node.keys[2]); }).select('circle')
+    d3.selectAll(".node").filter(function(d) { return d.keys.includes(node.keys[0]) || d.keys.includes(node.keys[1]) || d.keys.includes(node.keys[2]); }).select('rect')
         .transition()
         .duration(500)
         .ease(d3.easeLinear)
@@ -165,7 +165,7 @@ function recurseSearch(node, key) {
 
 function deleteKey(key) {
     // resetting colors
-    d3.selectAll(".node").select('circle')
+    d3.selectAll(".node").select('rect')
         .style("fill", function(d, i) {
             return (d.children.length > 0 && !(d.children[0].keys.every(k => k === "Empty"))) || d._children ? '#f0bc3e' : 'lightgray';
         });
@@ -184,7 +184,7 @@ function recurseDelete(node, key) {
     // Check for leaf node
     if (node.keys.includes(key) && node.children.length === 0) {
         // Delete the key from the node
-        d3.selectAll(".node").filter(function(d) { return d.keys.includes(key); }).select('circle')
+        d3.selectAll(".node").filter(function(d) { return d.keys.includes(key); }).select('rect')
             .transition()
             .duration(500)
             .ease(d3.easeLinear)
@@ -213,7 +213,7 @@ function recurseDelete(node, key) {
         var tempNode = getSuccessorOrPredecessor(node); // Find successor or predecessor
         console.log("Value of tempNode is ", tempNode.keys, " finding successor/predecessor for ", node.keys);
 
-        d3.selectAll(".node").filter(function(d) { return d.keys.includes(key); }).select('circle')
+        d3.selectAll(".node").filter(function(d) { return d.keys.includes(key); }).select('rect')
             .transition()
             .duration(500)
             .ease(d3.easeLinear)
@@ -244,7 +244,7 @@ function recurseDelete(node, key) {
         return;
     }
 
-    d3.selectAll(".node").filter(function(d) { return d.keys.includes(node.keys[0]); }).select('circle')
+    d3.selectAll(".node").filter(function(d) { return d.keys.includes(node.keys[0]); }).select('rect')
         .transition()
         .duration(500)
         .ease(d3.easeLinear)
