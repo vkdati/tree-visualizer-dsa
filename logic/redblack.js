@@ -162,6 +162,36 @@ class RedBlackTree {
           graph.parentElement.removeChild(graph);
       }
   }
+  clear()
+  {
+    this.root = null;
+    this.size = 0;
+  }
+  newJson(jsonNode)
+  {
+    this.clear();
+    this.insertFromJSON(jsonNode);
+    console.log(JSON.stringify(this.toJSON(),null,2));
+    drawTree(this.toJSON(),this.size,this);
+  }
+  insertFromJSON(jsonNode) {
+
+    if (jsonNode === null) {
+        return; // Base case: if the node is null, do nothing
+    }
+
+    // Insert the value of the current node
+    this.insert(jsonNode.value);
+    console.log(jsonNode.value);
+
+    // Recursively insert children
+    for (const child of jsonNode.children) {
+        if(child.value != "Empty"){
+        this.insertFromJSON(child); // Insert each child node
+        }
+    }
+    
+}
 }
 
 // const tree = new RedBlackTree();

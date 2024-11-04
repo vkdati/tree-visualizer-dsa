@@ -9,7 +9,7 @@ function drawTree(data,size,Tree)
         right: 5,
         bottom: 5,
         left: 20
-    },
+    }
         width = (600) - margin.right - margin.left,
         height = Math.max((200*(size/10 +1)),600) - margin.top - margin.bottom;
     window.treeLayout = d3.tree().size([height,width]);
@@ -61,7 +61,7 @@ function drawTree(data,size,Tree)
         .enter()
         .append('g')
         .attr('class', 'node')
-    
+       
         .attr('transform', d => `translate(${d.x}, ${d.y})`);
         
     gNode.append('circle')
