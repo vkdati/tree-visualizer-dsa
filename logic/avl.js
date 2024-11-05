@@ -194,20 +194,106 @@ class AVLTree {
     drawTree(this.toJSON(),this.size,this);
   }
   insertFromJSON(jsonNode) {
-
-    if (jsonNode === null) {
-        return; // Base case: if the node is null, do nothing
+    if (!jsonNode || jsonNode.value === "Empty") {
+      return null;
     }
 
-    // Insert the value of the current node
-    this.insert(jsonNode.value);
+    // Create a new node with the current value
+    const node = new AVLNode(jsonNode.value);
+    this.size++;
 
-    // Recursively insert children
-    for (const child of jsonNode.children) {
-        this.insertFromJSON(child); // Insert each child node
+    // If this is the first node, set it as root
+    if (!this.root) {
+      this.root = node;
     }
-    
-}
+
+    // Process children if they exist
+    if (jsonNode.children && jsonNode.children.length === 2) {
+      // Create left child
+      const leftChild = this.insertFromJSON(jsonNode.children[0]);
+      if (leftChild) {
+        node.left = leftChild;
+        leftChild.parent = node;
+      }
+
+      // Create right child
+      const rightChild = this.insertFromJSON(jsonNode.children[1]);
+      if (rightChild) {
+        node.right = rightChild;
+        rightChild.parent = node;
+      }
+    }
+
+    // Calculate the height based on children
+    node.height = 1 + Math.max(
+      this.getHeight(node.left),
+      this.getHeight(node.right)
+    );
+
+    return node;
+  }
+
+  balanceTree() {
+    this.root = this.balanceNode(this.root);
+  }
+
+  // Recursive helper to balance each node in the tree
+  balanceNode(node) {
+    if (!node) {
+      return null;
+    }
+
+    // First balance the children
+    node.left = this.balanceNode(node.left);
+    node.right = this.balanceNode(node.right);
+
+    // Update height
+    node.height = 1 + Math.max(
+      this.getHeight(node.left),
+      this.getHeight(node.right)
+    );
+
+    // Get balance factor
+    const balance = this.getBalance(node);
+
+    // Left Heavy
+    if (balance > 1) {
+      // Left-Left Case
+      if (this.getBalance(node.left) >= 0) {
+        return this.rotateRight(node);
+      }
+      // Left-Right Case
+      if (this.getBalance(node.left) < 0) {
+        node.left = this.rotateLeft(node.left);
+        return this.rotateRight(node);
+      }
+    }
+
+    // Right Heavy
+    if (balance < -1) {
+      // Right-Right Case
+      if (this.getBalance(node.right) <= 0) {
+        return this.rotateLeft(node);
+      }
+      // Right-Left Case
+      if (this.getBalance(node.right) > 0) {
+        node.right = this.rotateRight(node.right);
+        return this.rotateLeft(node);
+      }
+    }
+
+    return node;
+  }
+
+  // Update newJson to include balancing
+  newJson(jsonNode) {
+    this.clear();
+    this.root = this.insertFromJSON(jsonNode);
+    this.balanceTree();  // Add balancing step
+    console.log(JSON.stringify(this.toJSON(), null, 2));
+    drawTree(this.toJSON(), this.size, this);
+  }
+
 }
 
 // Test code

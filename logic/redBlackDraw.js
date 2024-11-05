@@ -147,6 +147,8 @@ function deleteKey(key)
 
     //     return (d.children && !(d.children[0].data.value == "Empty" && d.children[1].data.value == "Empty")) || d._children ? '#f0bc3e' : 'lightgray';
     // })
+    d3.selectAll(".node").select('circle').
+    style("stroke-width",0);
     recurseDelete(window.root,key);
 
 }
@@ -177,14 +179,22 @@ function recurseDelete(node,key)
         .text("Empty")
         .on("end",function(){;
         console.log("delete node of value",key);
-        removeTree();
-        window.Tree.newJson(JSON.parse(JSON.stringify(window.root.data)));
+        
+        // window.Tree.newJson(JSON.parse(JSON.stringify(window.root.data)));
         
         // drawTree(JSON.parse(JSON.stringify(window.root.data,null,2)),window.sizeOfArray);
         // console.log(JSON.stringify(window.root.data,null,2));
-        })});
-        return;
+        })
     }
+     ).transition()
+     .duration(500)
+     .on("end",function()
+    {
+        window.Tree.remove(key);
+    });
+        
+        return;
+}
     if(node.data.value == key && node.children)
     {
         var tempNode = getSuccessorOrPredecessor(node);

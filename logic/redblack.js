@@ -167,30 +167,160 @@ class RedBlackTree {
     this.root = null;
     this.size = 0;
   }
-  newJson(jsonNode)
-  {
-    this.clear();
-    this.insertFromJSON(jsonNode);
-    console.log(JSON.stringify(this.toJSON(),null,2));
-    drawTree(this.toJSON(),this.size,this);
-  }
-  insertFromJSON(jsonNode) {
+//   newJson(jsonNode)
+//   {
+//     this.clear();
+//     this.insertFromJSON(jsonNode);
+//     console.log(JSON.stringify(this.toJSON(),null,2));
+//     drawTree(this.toJSON(),this.size,this);
+//   }
+//   insertFromJSON(jsonNode) {
 
-    if (jsonNode === null) {
-        return; // Base case: if the node is null, do nothing
-    }
+//     if (jsonNode === null) {
+//         return; // Base case: if the node is null, do nothing
+//     }
 
-    // Insert the value of the current node
-    this.insert(jsonNode.value);
-    console.log(jsonNode.value);
+//     // Insert the value of the current node
+//     this.insert(jsonNode.value);
+//     console.log(jsonNode.value);
 
-    // Recursively insert children
-    for (const child of jsonNode.children) {
-        if(child.value != "Empty"){
-        this.insertFromJSON(child); // Insert each child node
-        }
-    }
+//     // Recursively insert children
+//     for (const child of jsonNode.children) {
+//         if(child.value != "Empty"){
+//         this.insertFromJSON(child); // Insert each child node
+//         }
+//     }
     
+// }
+remove(data) {
+  let z = this.findNode(data);
+  if (!z) {
+      console.log(`Value ${data} does not exist in the tree.`);
+      return;
+  }
+
+  let y = z;
+  let x;
+  let yOriginalColor = y.color;
+
+  if (z.left === null) {
+      x = z.right;
+      this.transplant(z, z.right);
+  } else if (z.right === null) {
+      x = z.left;
+      this.transplant(z, z.left);
+  } else {
+      y = this.minimum(z.right);
+      yOriginalColor = y.color;
+      x = y.right;
+      if (y.parent === z) {
+          if (x) x.parent = y;
+      } else {
+          this.transplant(y, y.right);
+          y.right = z.right;
+          y.right.parent = y;
+      }
+      this.transplant(z, y);
+      y.left = z.left;
+      y.left.parent = y;
+      y.color = z.color;
+  }
+
+  if (yOriginalColor === "BLACK") {
+      this.fixRemove(x, y.parent);
+  }
+  
+  this.size--;
+  this.removeTree();
+  drawTree(this.toJSON(),this.size);
+}
+
+fixRemove(x, p) {
+  while (x !== this.root && (x !== null && x.color === "BLACK")) {
+      if (x === p.left) {
+          let w = p.right;
+          if (w && w.color === "RED") {
+              w.color = "BLACK";
+              p.color = "RED";
+              this.rotateL(p);
+              w = p.right;
+          }
+          if ((w.left === null || w.left.color === "BLACK") && 
+              (w.right === null || w.right.color === "BLACK")) {
+              if (w) w.color = "RED";
+              x = p;
+              p = p.parent;
+          } else {
+              if (w.right === null || w.right.color === "BLACK") {
+                  if (w.left) w.left.color = "BLACK";
+                  if (w) w.color = "RED";
+                  this.rotateR(w);
+                  w = p.right;
+              }
+              if (w) w.color = p.color;
+              p.color = "BLACK";
+              if (w.right) w.right.color = "BLACK";
+              this.rotateL(p);
+              x = this.root;
+          }
+      } else {
+          let w = p.left;
+          if (w && w.color === "RED") {
+              w.color = "BLACK";
+              p.color = "RED";
+              this.rotateR(p);
+              w = p.left;
+          }
+          if ((w.right === null || w.right.color === "BLACK") && 
+              (w.left === null || w.left.color === "BLACK")) {
+              if (w) w.color = "RED";
+              x = p;
+              p = p.parent;
+          } else {
+              if (w.left === null || w.left.color === "BLACK") {
+                  if (w.right) w.right.color = "BLACK";
+                  if (w) w.color = "RED";
+                  this.rotateL(w);
+                  w = p.left;
+              }
+              if (w) w.color = p.color;
+              p.color = "BLACK";
+              if (w.left) w.left.color = "BLACK";
+              this.rotateR(p);
+              x = this.root;
+          }
+      }
+  }
+  if (x) x.color = "BLACK";
+}
+
+findNode(data) {
+  let current = this.root;
+  while (current !== null) {
+      if (data === current.data) return current;
+      current = data < current.data ? current.left : current.right;
+  }
+  return null;
+}
+
+transplant(u, v) {
+  if (u.parent === null) {
+      this.root = v;
+  } else if (u === u.parent.left) {
+      u.parent.left = v;
+  } else {
+      u.parent.right = v;
+  }
+  if (v !== null) {
+      v.parent = u.parent;
+  }
+}
+
+minimum(node) {
+  while (node.left !== null) {
+      node = node.left;
+  }
+  return node;
 }
 }
 

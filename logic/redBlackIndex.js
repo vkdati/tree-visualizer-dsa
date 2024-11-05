@@ -1,16 +1,17 @@
-var Tree = new RedBlackTree();
+window.Tree = new RedBlackTree();
 function getInpt()
 {
-    var input = parseInt(document.getElementById("inptkey").value);
+    var inpt = document.getElementById("inptkey").value;
+    var input = parseInt(inpt);
     console.log(input);
-    if(input==NaN)
+    if(inpt==="")
     {
         return;
     }
     document.getElementById("inptkey").value = "";
-    Tree.insert(input);
-    Tree.removeTree();
-    drawTree(Tree.toJSON(),Tree.size);
+    window.Tree.insert(input);
+    window.Tree.removeTree();
+    drawTree(window.Tree.toJSON(),window.Tree.size);
     initializeZoom();
     //test
     //console.log(JSON.stringify(Tree.toJSON(),null,2));
@@ -52,10 +53,11 @@ function deleteNode()
     }
     
     deleteKey(parseInt(deleteInpt));
-    console.log(JSON.stringify(Tree.toJSON(),null,2));
+    //window.Tree.remove(parseInt(deleteInpt));
+    console.log(JSON.stringify(window.Tree.toJSON(),null,2));
     
     //Tree.rebalanceTree();
-   // Tree.removeTree();
+   //Tree.removeTree();
    
-    //drawTree(Tree.toJSON(),Tree.size);
+   // drawTree(Tree.toJSON(),Tree.size);
 }
