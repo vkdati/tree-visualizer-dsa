@@ -124,6 +124,121 @@ class Tree24 {
 
         return jsonNode;
     }
+    delete(value) {
+        if (this.deleteRecursive(this.root, value)) {
+            console.log(`${value} was deleted.`);
+        } else {
+
+            console.log(`${value} not found in the tree.`);
+        }
+    
+        if (this.root.keys.length === 0 && !this.root.isLeaf) {
+            this.root = this.root.children[0];
+        }
+        this.removeTree();
+        drawTree(this.toJSON(),this.size);
+    }
+    
+    deleteRecursive(node, value) {
+        // Same logic as before, but add a return value to indicate success or failure
+        let idx = node.keys.findIndex(key => key === value);
+        
+        if (idx !== -1) {
+            if (node.isLeaf) {
+                node.keys.splice(idx, 1);
+                return true;
+            } else {
+                this.deleteInternalNodeKey(node, idx);
+                return true;
+            }
+        } else if (!node.isLeaf) {
+            let childIndex = node.keys.findIndex(key => key > value);
+            if (childIndex === -1) childIndex = node.keys.length;
+    
+            const child = node.children[childIndex];
+            if (child.keys.length < 2) {
+                this.fillChild(node, childIndex);
+            }
+            return this.deleteRecursive(node.children[childIndex], value);
+        }
+    
+        return false;  // Value not found in the tree
+    }
+
+    deleteInternalNodeKey(node, idx) {
+        const leftChild = node.children[idx];
+        const rightChild = node.children[idx + 1];
+
+        if (leftChild.keys.length >= 2) {
+            node.keys[idx] = this.getPredecessor(leftChild);
+            this.deleteRecursive(leftChild, node.keys[idx]);
+        } else if (rightChild.keys.length >= 2) {
+            node.keys[idx] = this.getSuccessor(rightChild);
+            this.deleteRecursive(rightChild, node.keys[idx]);
+        } else {
+            this.mergeNodes(node, idx);
+            this.deleteRecursive(leftChild, value);
+        }
+    }
+
+    fillChild(node, i) {
+        if (i > 0 && node.children[i - 1].keys.length >= 2) {
+            this.borrowFromPrev(node, i);
+        } else if (i < node.children.length - 1 && node.children[i + 1].keys.length >= 2) {
+            this.borrowFromNext(node, i);
+        } else {
+            if (i < node.children.length - 1) {
+                this.mergeNodes(node, i);
+            } else {
+                this.mergeNodes(node, i - 1);
+            }
+        }
+    }
+
+    borrowFromPrev(node, i) {
+        const child = node.children[i];
+        const sibling = node.children[i - 1];
+
+        child.keys.unshift(node.keys[i - 1]);
+        node.keys[i - 1] = sibling.keys.pop();
+
+        if (!child.isLeaf) {
+            child.children.unshift(sibling.children.pop());
+        }
+    }
+
+    borrowFromNext(node, i) {
+        const child = node.children[i];
+        const sibling = node.children[i + 1];
+
+        child.keys.push(node.keys[i]);
+        node.keys[i] = sibling.keys.shift();
+
+        if (!child.isLeaf) {
+            child.children.push(sibling.children.shift());
+        }
+    }
+
+    mergeNodes(node, i) {
+        const child = node.children[i];
+        const sibling = node.children[i + 1];
+
+        child.keys.push(node.keys[i], ...sibling.keys);
+        child.children.push(...sibling.children);
+
+        node.keys.splice(i, 1);
+        node.children.splice(i + 1, 1);
+    }
+
+    getPredecessor(node) {
+        while (!node.isLeaf) node = node.children[node.keys.length];
+        return node.keys[node.keys.length - 1];
+    }
+
+    getSuccessor(node) {
+        while (!node.isLeaf) node = node.children[0];
+        return node.keys[0];
+    }
 
     removeTree() {
         const graph = document.querySelector("svg");

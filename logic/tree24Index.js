@@ -1,9 +1,10 @@
 var Tree = new Tree24();
 function getInpt() {
     
-    var input = parseInt(document.getElementById("inptkey").value);
+    var inpt = document.getElementById("inptkey").value;
+    var input = parseInt(inpt);
     console.log(input);
-    if(input==NaN)
+    if(input==NaN || inpt == "")
     {
         return;
     }
@@ -26,28 +27,12 @@ function initializeZoom(){
     d3.select('svg').call(zoom);
     }
 
-function searchNode() {
-    // Get the value entered in the search input field
-    var searchInpt = document.getElementById("searchkey").value;
 
-    // Parse the value to an integer
-    var searchKey = parseInt(searchInpt);
-
-    // If input is empty or not a number, return without doing anything
-    if (isNaN(searchKey) || searchInpt === "") {
-        return;
-    }
-
-    // Call the search function to find the node in the 2-4 tree
-    if (window.currentTree) {
-        window.currentTree.search(searchKey);  // Assuming search is a method of Tree24
-    }
-}
 
 function deleteNode() {
     // Get the value entered in the delete input field
-    var deleteInpt = document.getElementById("deletekey").value;
-
+    var deleteInpt = document.getElementById("inptkey").value;
+    
     // Parse the value to an integer
     var keyToDelete = parseInt(deleteInpt);
 
@@ -57,7 +42,7 @@ function deleteNode() {
     }
 
     // Call the delete function to remove the node from the 2-4 tree
-    if (window.currentTree) {
-        window.currentTree.deleteKey(keyToDelete);  // Assuming deleteKey is a method of Tree24
-    }
+    
+    Tree.delete(keyToDelete);  // Assuming deleteKey is a method of Tree24
+    
 }
